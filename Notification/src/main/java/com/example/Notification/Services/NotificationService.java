@@ -1,6 +1,9 @@
 package com.example.Notification.Services;
 
 import com.example.Notification.Entities.AccountCreatedNotif;
+import com.example.grpc.EmailRequest;
+import com.example.grpc.NotifyGrpc;
+import com.example.grpc.sent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -9,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class NotificationService {
+public class NotificationService extends NotifyGrpc.NotifyImplBase {
     @Autowired
       JavaMailSender javaMailSender;
 
@@ -28,4 +31,22 @@ public class NotificationService {
 
 
     }
+    @Override
+    public void notifyUnary(com.example.grpc.EmailRequest request,
+                            io.grpc.stub.StreamObserver<com.example.grpc.sent> responseObserver) {
+       boolean result =false;
+       try {
+           this.sendEmail(new AccountCreatedNotif(request.getEmail(), request.getFirstname(), request.getLastname()));
+           result=true;
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+
+        sent response = sent.newBuilder()
+             .setSent(result)
+             .build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
 }

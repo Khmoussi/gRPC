@@ -15,4 +15,8 @@ public class UserService {
     public void saveUser(UserRequest userRequest){
         this.userRepository.save(new User(userRequest.getEmail(), userRequest.getFirstName(), userRequest.getLastName(), userRequest.getPassword()));
     }
+
+    public void deleteUser(String email) {
+        this.userRepository.deleteById(email);
+    }
 }

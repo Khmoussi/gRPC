@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class GreeterClient {
     private final ManagedChannel channel;
     private final GreeterGrpc.GreeterBlockingStub blockingStub;
+    private final GreeterGrpc.GreeterStub asyncStub;
 
     public GreeterClient(String host, int port) {
         this(ManagedChannelBuilder.forAddress(host, port)
@@ -21,6 +22,7 @@ public class GreeterClient {
     GreeterClient(ManagedChannel channel) {
         this.channel = channel;
         blockingStub = GreeterGrpc.newBlockingStub(channel);
+        asyncStub=GreeterGrpc.newStub(channel);
     }
 
     public void shutdown() throws InterruptedException {
